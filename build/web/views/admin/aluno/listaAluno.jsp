@@ -1,31 +1,43 @@
-<%@page import="entidade.Aluno"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.ArrayList"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    List<entidade.Aluno> alunos = (List<entidade.Aluno>) request.getAttribute("alunos");
+%>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="#">
-        <title>Aluno</title>
-        <link href="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.min.css"  rel="stylesheet">
-    </head>
-    <body>
-        <jsp:include page="../../comum/menu.jsp"/>
-        <div class="container">
-            <div class="mt-5">
-                <%
-                    ArrayList<Aluno> alunos = (ArrayList<Aluno>) request.getAttribute("Alunos");
-                    for (Aluno aluno : alunos) {%>
-                    
-                    <h1><%= aluno.getNome()%> </h1>
-                    
-                  <%  }%>
-                <div/>
-            </div>
-
-            <script src="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.bundle.min.js"></script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Lista de Alunos</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Alunos</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Cidade</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for (entidade.Aluno aluno : alunos) { %>
+                <tr>
+                    <td><%= aluno.getNome() %></td>
+                    <td><%= aluno.getEmail() %></td>
+                    <td><%= aluno.getCidade() %></td>
+                    <td>
+                        <a href="AlunoController?action=edit&id=<%= aluno.getId() %>" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="AlunoController?action=delete&id=<%= aluno.getId() %>" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <a href="AlunoForm.jsp" class="btn btn-primary">Novo Aluno</a>
+    </div>
+</body>
 </html>

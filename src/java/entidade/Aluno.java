@@ -27,6 +27,14 @@ public class Aluno {
 
     public Aluno() {
     }
+
+    public Aluno(String string, String string0, String string1, String string2, String string3, String string4, String string5, String string6, String string7) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Aluno(int id, String nome, String cpf, String email) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     public int getId() {
         return id;

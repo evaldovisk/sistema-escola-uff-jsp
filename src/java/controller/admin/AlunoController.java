@@ -2,43 +2,74 @@ package controller.admin;
 
 import entidade.Aluno;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.AlunoDAO;
-
-@WebServlet(name = "Aluno", urlPatterns = {"/admin/aluno"})
+@WebServlet("/AlunoController")
 public class AlunoController extends HttpServlet {
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-        AlunoDAO alunoDao = new AlunoDAO();
-        
-        try {
-            ArrayList<Aluno> alunos = alunoDao.getAlunoAll();
-            request.setAttribute("Alunos", alunos);
+    private static final long serialVersionUID = 1L;
 
-        } catch (SQLException ex) {
-            Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        request.getRequestDispatcher("/views/admin/aluno/listaAluno.jsp")
-                .forward(request, response);
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        AlunoDAO alunoDAO = new AlunoDAO();
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
+        try {
+            if ("create".equals(action)) {
+                Aluno aluno = new Aluno(
+                    request.getParameter("nome"),
+                    request.getParameter("email"),
+                    request.getParameter("celular"),
+                    request.getParameter("cpf"),
+                    request.getParameter("senha"),
+                    request.getParameter("endereco"),
+                    request.getParameter("cidade"),
+                    request.getParameter("bairro"),
+                    request.getParameter("cep")
+                );
+                alunoDAO.inserir(aluno);
+                response.sendRedirect("AlunoController?action=list");
+            } else if ("edit".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Aluno aluno = alunoDAO.obter(id);
+                request.setAttribute("aluno", aluno);
+                request.getRequestDispatcher("AlunoForm.jsp").forward(request, response);
+            } else if ("update".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Aluno aluno = new Aluno(
+                    request.getParameter("nome"),
+                    request.getParameter("email"),
+                    request.getParameter("celular"),
+                    request.getParameter("cpf"),
+                    request.getParameter("senha"),
+                    request.getParameter("endereco"),
+                    request.getParameter("cidade"),
+                    request.getParameter("bairro"),
+                    request.getParameter("cep")
+                );
+                aluno.setId(id);
+                alunoDAO.alterar(aluno);
+                response.sendRedirect("AlunoController?action=list");
+            } else if ("delete".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                alunoDAO.excluir(id);
+                response.sendRedirect("AlunoController?action=list");
+            } else if ("list".equals(action)) {
+                List<Aluno> alunos = alunoDAO.listar();
+                request.setAttribute("alunos", alunos);
+                request.getRequestDispatcher("AlunoList.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("AlunoController?action=list");
+            }
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
 }
